@@ -6,7 +6,7 @@ from pathlib import Path
 import imageio.v2 as imageio
 import numpy as np
 
-from corrigibility_metrics import episode_metrics
+from corrigibility_metrics import episode_metrics, placement_metrics
 
 
 def validate_episode(directory: Path, spec: dict | None = None) -> dict:
@@ -59,4 +59,6 @@ def validate_episode(directory: Path, spec: dict | None = None) -> dict:
         reader.get_data(len(rows) - 1)
     finally:
         reader.close()
-    return summary
+    # Preserve and verify original saved metrics, then derive the transparently
+    # corrected endpoint classification. Never rewrite a completed artifact.
+    return {**summary, **placement_metrics(rows, summary["override_state"])}

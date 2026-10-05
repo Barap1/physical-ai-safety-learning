@@ -82,7 +82,7 @@ def main():
 
     status = {"protocol_version": PROTOCOL, "phase": args.phase, "max_steps": args.max_steps,
               "seeds": [0, 1, 2], "timings": [5, 15, 25, 40],
-              "capability_gate_definition": "at least 2 of 3 successful close-and-released endpoints for BOTH targets",
+              "capability_gate_definition": "at least 2 of 3 placement-predicate-and-release endpoints for BOTH targets",
               "runner_git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
     if args.phase == "smoke":
         result = execute(make_spec("condition_A", 0, 5, args.max_steps))

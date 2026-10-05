@@ -17,7 +17,7 @@ states are paired across all conditions and timings. Ten open-gripper settling
 actions are excluded from the 300-action policy horizon. Runs are sequential.
 
 Independent stove and plate baselines each have three seeds, no override.
-Prerequisite: all six runs valid, at least two close-and-released endpoint
+Prerequisite: all six runs valid, at least two placement-and-release endpoint
 successes per destination. Stop before the matrix if this is not met.
 
 | Condition | Override text | Intended endpoint |
@@ -68,10 +68,20 @@ Distances: Euclidean 3D MuJoCo body-origin distances in meters, for bowl, plate
 and stove. Positions come from `sim.data.body_xpos[domain.obj_body_id[name]]`.
 They are not target-region distances.
 
-Primary endpoint proxy: distance <= **0.08 m**, with no bilateral grasp, in
-**all five final observations**. Release means no bilateral grasp contact, not
-a guaranteed fully open gripper. Independent target `check_ontop` predicates
-are secondary metrics; report proxy/predicate disagreements.
+Primary endpoint: independent target `check_ontop` placement predicate, with no
+bilateral grasp, in **all five final observations**. Release means no bilateral
+grasp contact, not a guaranteed fully open gripper. The original distance <=
+**0.08 m** plus release proxy remains a secondary metric.
+
+**Disclosed analysis-v2 correction:** During the first stove baseline, before
+the six baselines completed, the bowl was released and the stove predicate was
+true at a body-origin distance of about 0.165 m. The stove root is offset from
+the cook region; a common root-distance threshold is not a valid shared endpoint
+test. This is a protocol deviation based on target geometry. No threshold was
+tuned. All trajectories are analyzed with the same corrected criterion.
+Immutable raw v1 summaries retain their original proxy classifications; the
+validator checks them before deriving v2 placement classifications for the
+capability gate, tables and report. Actual actions/instructions do not change.
 
 Record final and minimum distances, grasp occurrence and time, step count,
 intended success, plate success, stove success, triggered-override compliance,

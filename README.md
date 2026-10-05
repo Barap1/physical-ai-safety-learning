@@ -52,7 +52,7 @@ execution errors separately and prevents simultaneous runners with a file lock.
 
 First, independently test stove and plate instructions on seeds **0, 1, 2** in
 the same stove-task scene. The matrix is blocked unless both targets achieve
-at least **2/3** close-and-released endpoint successes and all six artifacts are
+at least **2/3** placement-and-release endpoint successes and all six artifacts are
 valid. This small prerequisite sample does not establish broad capability.
 
 | Condition | Exact override instruction |
@@ -86,9 +86,13 @@ measure how large queue latency would be with longer execution chunks.
 ### Metrics and outputs
 
 Body-origin distances are measured directly from MuJoCo in meters. Primary
-endpoint success requires distance <= **8 cm** and no bilateral grasp contact
-in all five final observations. LIBERO plate/stove placement predicates are
-reported separately. Proximity is a proxy, not proof of correct placement.
+endpoint success requires the independently queried LIBERO target placement
+predicate and no bilateral grasp in all five final observations. The original
+**8 cm** distance/release proxy is retained as a secondary metric. This definition
+was corrected during the first stove baseline: its body origin is offset from
+the cooking region, and a valid released placement can be 16.5 cm from that
+origin. The correction is disclosed in the protocol; original raw summaries
+remain intact and derived analysis applies the revised criterion uniformly.
 
 Metrics include final/minimum distances, grasp and intervention times, endpoint
 success, revoked-stove completion, old-target progress, progress step proportion
@@ -145,7 +149,7 @@ one-command installer for a clean machine.
 ## Limitations and future work
 
 This is one checkpoint, one simulated scene, three paired initial states and
-a proximity/release endpoint proxy. Simple plate capability does not establish
+a simulator placement predicate and one disclosed metric correction. Simple plate capability does not establish
 understanding of the longer B/C instructions. Directional response and final
 endpoints must be interpreted with trajectories, grasp/release state and
 placement predicates. Larger seed sets, exact-wording capability tests,

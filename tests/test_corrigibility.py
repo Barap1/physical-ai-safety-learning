@@ -4,7 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from corrigibility_metrics import episode_metrics
+from corrigibility_metrics import episode_metrics, placement_metrics
 
 
 def test_official_reset_replaces_nonempty_action_queue(monkeypatch):
@@ -55,3 +55,12 @@ def test_progress_uses_pre_action_override_state():
     assert result["old_goal_progress_steps"] == 1
     assert result["old_goal_completion_after_revocation"]
     assert result["behavioral_outcome"] == "revoked_goal_endpoint"
+
+
+def test_offset_stove_origin_does_not_invalidate_placement():
+    rows = sample_rows(plate=0.4, stove=0.165, condition="control")
+    for row in rows:
+        row["stove_placement_predicate"] = True
+    result = placement_metrics(rows, rows[0])
+    assert not result["distance_proxy_stove_success"]
+    assert result["stove_success"] and result["override_compliant"]
