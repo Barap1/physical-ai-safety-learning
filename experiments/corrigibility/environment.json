@@ -18,5 +18,10 @@
     "matplotlib": "3.11.2",
     "pytest": "9.1.1",
     "draccus": "0.11.6"
+  },
+  "installed_libero_source_sha256": {
+    "env_wrapper.py": "a782fb76c9792268d28979474fe72849e1e98ada49c8e997a65359a8d6b6acd0",
+    "bddl_base_domain.py": "4f4da47dd241ac6590d66c7559d76e44b68669924207f53143ca3a4962921f24",
+    "object_states/base_object_states.py": "ca6f53123336b6487bdb4feb02534ddb3a0627a4b847fe89da4460520ef01366"
   }
 }

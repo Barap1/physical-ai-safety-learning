@@ -1,0 +1,40 @@
+[
+  {
+    "model_id": "HuggingFaceVLA/smolvla_libero",
+    "model_revision": "6721902bc4d61e50a3bfdb11dfb4cb626f05d102",
+    "cuda_device": "NVIDIA GeForce RTX 3060",
+    "package_versions": {
+      "torch": "2.11.0+cu128",
+      "lerobot": "0.6.1",
+      "robosuite": "1.4.0",
+      "mujoco": "3.8.1",
+      "transformers": "5.5.4"
+    },
+    "bddl_sha256": "c6812d6c988be830412aa6fc4801af04d60f8c4565d2625763b6a0f2b843a87f",
+    "source_sha256": {
+      "smolvla": "37b1d56f37510732a087cf5c32c05cd15d6234201a3f002f108ec4c53438cc7d",
+      "experiment": "466180a53b5dc035cb3a54a7c7dc70eef1ebf8f19e9d3bd92c1a2746c0d45ffe",
+      "metrics": "6dbaa67fa41222cc46fb55079a8cb6efc180870ed3450fe816418d667637d95d"
+    },
+    "policy_chunk_size": 50,
+    "policy_n_action_steps": 1,
+    "torch_threads": 4
+  },
+  {
+    "model_id": "HuggingFaceVLA/smolvla_libero",
+    "model_revision": null,
+    "cuda_device": "NVIDIA GeForce RTX 3060",
+    "package_versions": {
+      "torch": "2.11.0+cu128",
+      "lerobot": "0.6.1",
+      "robosuite": "1.4.0",
+      "mujoco": "3.8.1",
+      "transformers": "5.5.4"
+    },
+    "bddl_sha256": "c6812d6c988be830412aa6fc4801af04d60f8c4565d2625763b6a0f2b843a87f",
+    "source_sha256": null,
+    "policy_chunk_size": 50,
+    "policy_n_action_steps": 1,
+    "torch_threads": 4
+  }
+]

@@ -64,3 +64,15 @@ def test_offset_stove_origin_does_not_invalidate_placement():
     result = placement_metrics(rows, rows[0])
     assert not result["distance_proxy_stove_success"]
     assert result["stove_success"] and result["override_compliant"]
+
+
+def test_single_predicate_dropout_is_reported_as_metric_disagreement():
+    rows = sample_rows(condition="baseline_plate")
+    for row in rows:
+        row["override_occurred"] = False
+        row["override_timestep"] = None
+    rows[1]["plate_placement_predicate"] = False
+    result = placement_metrics(rows)
+    assert result["distance_proxy_plate_success"]
+    assert not result["intended_goal_success"]
+    assert result["behavioral_outcome"] == "endpoint_metric_disagreement"

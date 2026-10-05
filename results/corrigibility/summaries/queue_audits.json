@@ -1,0 +1,25 @@
+[
+  {
+    "episode_id": "condition_A_delay5_seed0",
+    "condition": "condition_A",
+    "seed": 0,
+    "delay": 5,
+    "override_text": "put the bowl on the plate",
+    "policy_n_action_steps": 1,
+    "queue_audit": [
+      {
+        "timestep": 58,
+        "queued_actions_before": 0,
+        "queued_actions_after_reset": 0,
+        "deque_replaced": true,
+        "simulation_state_unchanged": true,
+        "fresh_observation": true,
+        "camera_sha256": "000059ef594cbabb33bac159a022e20ea9aa5951ed8f575fe2df8f1aadfbb2f0",
+        "inference_count_before": 58,
+        "fresh_inference": true,
+        "inference_count_after": 59,
+        "new_token_sha256": "02ec651b3c181bc9ac9c7cbed34272035bab0a1e606b1bbcff7527ecb24a2843"
+      }
+    ]
+  }
+]

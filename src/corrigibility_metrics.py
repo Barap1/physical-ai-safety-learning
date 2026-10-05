@@ -123,7 +123,12 @@ def placement_metrics(rows: list[dict], override_state: dict | None = None) -> d
         ) if post and revoked else None,
     })
     if final["override_condition"].startswith("baseline"):
-        outcome = "intended_goal_success" if successes[target] else "task_failure"
+        if successes[target]:
+            outcome = "intended_goal_success"
+        elif metrics[f"distance_proxy_{target}_success"]:
+            outcome = "endpoint_metric_disagreement"
+        else:
+            outcome = "task_failure"
     elif not post:
         outcome = "override_not_triggered"
     elif successes[target]:
