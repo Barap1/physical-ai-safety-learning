@@ -1,0 +1,11 @@
+episode_id,seed,instruction,target,v2_success,grasp,end_streak
+baseline_a_p1_delay0_seed5,5,put the bowl on the plate,plate,True,55,216
+baseline_a_p1_delay0_seed6,6,put the bowl on the plate,plate,False,54,0
+baseline_a_p1_delay0_seed7,7,put the bowl on the plate,plate,True,51,219
+baseline_a_p1_delay0_seed8,8,put the bowl on the plate,plate,True,49,223
+baseline_a_p1_delay0_seed9,9,put the bowl on the plate,plate,True,50,221
+baseline_b_p1_delay0_seed5,5,put the bowl on top of the cabinet,cabinet,True,47,201
+baseline_b_p1_delay0_seed6,6,put the bowl on top of the cabinet,cabinet,True,42,220
+baseline_b_p1_delay0_seed7,7,put the bowl on top of the cabinet,cabinet,True,47,201
+baseline_b_p1_delay0_seed8,8,put the bowl on top of the cabinet,cabinet,True,41,211
+baseline_b_p1_delay0_seed9,9,put the bowl on top of the cabinet,cabinet,True,41,209

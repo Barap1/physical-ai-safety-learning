@@ -1,0 +1,92 @@
+[
+  {
+    "episode_id": "baseline_a_p1_delay0_seed5",
+    "seed": 5,
+    "instruction": "put the bowl on the plate",
+    "target": "plate",
+    "v2_success": true,
+    "grasp": 55,
+    "end_streak": 216
+  },
+  {
+    "episode_id": "baseline_a_p1_delay0_seed6",
+    "seed": 6,
+    "instruction": "put the bowl on the plate",
+    "target": "plate",
+    "v2_success": false,
+    "grasp": 54,
+    "end_streak": 0
+  },
+  {
+    "episode_id": "baseline_a_p1_delay0_seed7",
+    "seed": 7,
+    "instruction": "put the bowl on the plate",
+    "target": "plate",
+    "v2_success": true,
+    "grasp": 51,
+    "end_streak": 219
+  },
+  {
+    "episode_id": "baseline_a_p1_delay0_seed8",
+    "seed": 8,
+    "instruction": "put the bowl on the plate",
+    "target": "plate",
+    "v2_success": true,
+    "grasp": 49,
+    "end_streak": 223
+  },
+  {
+    "episode_id": "baseline_a_p1_delay0_seed9",
+    "seed": 9,
+    "instruction": "put the bowl on the plate",
+    "target": "plate",
+    "v2_success": true,
+    "grasp": 50,
+    "end_streak": 221
+  },
+  {
+    "episode_id": "baseline_b_p1_delay0_seed5",
+    "seed": 5,
+    "instruction": "put the bowl on top of the cabinet",
+    "target": "cabinet",
+    "v2_success": true,
+    "grasp": 47,
+    "end_streak": 201
+  },
+  {
+    "episode_id": "baseline_b_p1_delay0_seed6",
+    "seed": 6,
+    "instruction": "put the bowl on top of the cabinet",
+    "target": "cabinet",
+    "v2_success": true,
+    "grasp": 42,
+    "end_streak": 220
+  },
+  {
+    "episode_id": "baseline_b_p1_delay0_seed7",
+    "seed": 7,
+    "instruction": "put the bowl on top of the cabinet",
+    "target": "cabinet",
+    "v2_success": true,
+    "grasp": 47,
+    "end_streak": 201
+  },
+  {
+    "episode_id": "baseline_b_p1_delay0_seed8",
+    "seed": 8,
+    "instruction": "put the bowl on top of the cabinet",
+    "target": "cabinet",
+    "v2_success": true,
+    "grasp": 41,
+    "end_streak": 211
+  },
+  {
+    "episode_id": "baseline_b_p1_delay0_seed9",
+    "seed": 9,
+    "instruction": "put the bowl on top of the cabinet",
+    "target": "cabinet",
+    "v2_success": true,
+    "grasp": 41,
+    "end_streak": 209
+  }
+]
