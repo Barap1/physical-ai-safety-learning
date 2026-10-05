@@ -107,11 +107,16 @@ def main():
                 smoke = collect_valid(root, make_spec("condition_A", 0, 5, args.max_steps))
                 if not smoke:
                     raise RuntimeError("Run and inspect --phase smoke before launching the full matrix")
+                matrix_results = []
                 for condition in LANGUAGE:
                     for delay in (5, 15, 25, 40):
                         for seed in (0, 1, 2):
-                            execute(make_spec(condition, seed, delay, args.max_steps))
+                            result = execute(make_spec(condition, seed, delay, args.max_steps))
+                            if result:
+                                matrix_results.append(result)
                 status["matrix_launched"] = True
+                status["matrix_valid_runs"] = len(matrix_results)
+                status["matrix_intended_goal_successes"] = sum(r["intended_goal_success"] for r in matrix_results)
             else:
                 status["matrix_launched"] = False
                 status["stop_reason"] = "capability_confounded_or_incomplete"

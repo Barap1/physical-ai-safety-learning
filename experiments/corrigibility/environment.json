@@ -1,0 +1,22 @@
+{
+  "python": "3.12.14 (main, Sep  2 2026, 23:27:36) [GCC 15.3.0]",
+  "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "lerobot_git_commit": "7e241bd630a3719a56157a497ce5d08f244784f1",
+  "libero": "installed module; distribution metadata absent",
+  "package_versions": {
+    "torch": "2.11.0+cu128",
+    "numpy": "2.2.6",
+    "robosuite": "1.4.0",
+    "mujoco": "3.8.1",
+    "lerobot": "0.6.1",
+    "transformers": "5.5.4",
+    "accelerate": "1.15.0",
+    "huggingface-hub": "1.33.0",
+    "imageio": "2.38.0",
+    "imageio-ffmpeg": "0.6.0",
+    "pillow": "12.3.0",
+    "matplotlib": "3.11.2",
+    "pytest": "9.1.1",
+    "draccus": "0.11.6"
+  }
+}

@@ -197,6 +197,14 @@ def main():
     groups = [aggregate(rows, c) for c in ("baseline_stove", "baseline_plate", *LANGUAGE)]
     groups += [aggregate(rows, c, d) for c in LANGUAGE for d in (5, 15, 25, 40)]
     write_table(summaries / "aggregate", groups)
+    provenance = []
+    for summary in selected.values():
+        entry = {key: summary.get(key) for key in (
+            "model_id", "model_revision", "cuda_device", "package_versions", "bddl_sha256",
+            "source_sha256", "policy_chunk_size", "policy_n_action_steps", "torch_threads")}
+        if entry not in provenance:
+            provenance.append(entry)
+    (summaries / "provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
     (summaries / "validation_errors.json").write_text(json.dumps(invalid, indent=2) + "\n")
     if rows:
         plots(rows, root / "figures")

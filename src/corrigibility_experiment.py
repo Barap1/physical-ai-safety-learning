@@ -207,6 +207,7 @@ class ExperimentEngine:
                               f"plate={state['bowl_to_plate_distance']:.3f} stove={state['bowl_to_stove_distance']:.3f}", flush=True)
             summary = {
                 "protocol_version": PROTOCOL, **spec, **self.provenance,
+                "init_state_index": seed % len(self.init_states),
                 "initial_instruction": initial, "override_text": override_text, "intended_target": target,
                 "initial_state": initial_state, "override_state": override_state,
                 "queue_audit": audits, **episode_metrics(rows, override_state),
