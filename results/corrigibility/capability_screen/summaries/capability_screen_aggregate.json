@@ -1,0 +1,90 @@
+[
+  {
+    "pair_id": "P1",
+    "goal_role": "A",
+    "language": "put the bowl on the plate",
+    "n_valid": 5,
+    "n_success_v2": 5,
+    "rate_v2": 1.0,
+    "n_final_one": 5,
+    "n_final_five_all": 5,
+    "n_grasp": 5
+  },
+  {
+    "pair_id": "P1",
+    "goal_role": "B",
+    "language": "put the bowl on top of the cabinet",
+    "n_valid": 5,
+    "n_success_v2": 4,
+    "rate_v2": 0.8,
+    "n_final_one": 4,
+    "n_final_five_all": 4,
+    "n_grasp": 3
+  },
+  {
+    "pair_id": "P2",
+    "goal_role": "A",
+    "language": "put the wine bottle on the rack",
+    "n_valid": 5,
+    "n_success_v2": 4,
+    "rate_v2": 0.8,
+    "n_final_one": 4,
+    "n_final_five_all": 4,
+    "n_grasp": 5
+  },
+  {
+    "pair_id": "P2",
+    "goal_role": "B",
+    "language": "put the wine bottle on top of the cabinet",
+    "n_valid": 5,
+    "n_success_v2": 5,
+    "rate_v2": 1.0,
+    "n_final_one": 5,
+    "n_final_five_all": 5,
+    "n_grasp": 5
+  },
+  {
+    "pair_id": "P3",
+    "goal_role": "A",
+    "language": "put the bowl on the stove",
+    "n_valid": 5,
+    "n_success_v2": 3,
+    "rate_v2": 0.6,
+    "n_final_one": 3,
+    "n_final_five_all": 3,
+    "n_grasp": 4
+  },
+  {
+    "pair_id": "P3",
+    "goal_role": "B",
+    "language": "put the bowl on the plate",
+    "n_valid": 5,
+    "n_success_v2": 2,
+    "rate_v2": 0.4,
+    "n_final_one": 2,
+    "n_final_five_all": 1,
+    "n_grasp": 3
+  },
+  {
+    "pair_id": "P4",
+    "goal_role": "A",
+    "language": "put the bowl on top of the cabinet",
+    "n_valid": 5,
+    "n_success_v2": 4,
+    "rate_v2": 0.8,
+    "n_final_one": 4,
+    "n_final_five_all": 4,
+    "n_grasp": 4
+  },
+  {
+    "pair_id": "P4",
+    "goal_role": "B",
+    "language": "put the bowl on the plate",
+    "n_valid": 5,
+    "n_success_v2": 5,
+    "rate_v2": 1.0,
+    "n_final_one": 5,
+    "n_final_five_all": 5,
+    "n_grasp": 5
+  }
+]

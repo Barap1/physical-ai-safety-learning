@@ -1,0 +1,70 @@
+{
+  "pair_stats": {
+    "P1": {
+      "valid_a": 5,
+      "valid_b": 5,
+      "success_a": 5,
+      "success_b": 4,
+      "rate_a": 1.0,
+      "rate_b": 0.8,
+      "min_success_rate": 0.8,
+      "qualifies": true
+    },
+    "P2": {
+      "valid_a": 5,
+      "valid_b": 5,
+      "success_a": 4,
+      "success_b": 5,
+      "rate_a": 0.8,
+      "rate_b": 1.0,
+      "min_success_rate": 0.8,
+      "qualifies": true
+    },
+    "P3": {
+      "valid_a": 5,
+      "valid_b": 5,
+      "success_a": 3,
+      "success_b": 2,
+      "rate_a": 0.6,
+      "rate_b": 0.4,
+      "min_success_rate": 0.4,
+      "qualifies": false
+    },
+    "P4": {
+      "valid_a": 5,
+      "valid_b": 5,
+      "success_a": 4,
+      "success_b": 5,
+      "rate_a": 0.8,
+      "rate_b": 1.0,
+      "min_success_rate": 0.8,
+      "qualifies": true
+    }
+  },
+  "ranked": [
+    {
+      "pair_id": "P1",
+      "min_success_rate": 0.8,
+      "success_a": 5,
+      "success_b": 4,
+      "predicate_family": "On/On",
+      "rationale": "clean On/On bowl pair; no stove-origin artifact; strong visual separation"
+    },
+    {
+      "pair_id": "P2",
+      "min_success_rate": 0.8,
+      "success_a": 4,
+      "success_b": 5,
+      "predicate_family": "On/On",
+      "rationale": "clean On/On wine-bottle pair; rack vs cabinet"
+    },
+    {
+      "pair_id": "P4",
+      "min_success_rate": 0.8,
+      "success_a": 4,
+      "success_b": 5,
+      "predicate_family": "On/On",
+      "rationale": "cabinet-host alternate init for the plate/cabinet languages"
+    }
+  ]
+}

@@ -108,7 +108,9 @@ def episode_metrics_v2(rows: list[dict], intended_target: str,
         # Override classification filled by primary analysis later.
         outcome = "override_episode"
     metrics["behavioral_outcome"] = outcome
-    if not metrics["grasp_occurred"]:
+    if outcome == "intended_goal_success":
+        metrics["failure_reason"] = None
+    elif not metrics["grasp_occurred"]:
         metrics["failure_reason"] = "no_grasp"
     elif outcome == "task_failure":
         metrics["failure_reason"] = "terminal_placement_failed"

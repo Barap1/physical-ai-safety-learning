@@ -1,0 +1,41 @@
+pair_id,host_task,seed,instruction,intended_target,v2_success,final_one,final_five,v2_true_count,end_streak,grasp_occurred,grasp_timestep,outcome,failure_reason
+P1,put_the_bowl_on_the_plate,0,put the bowl on the plate,plate,True,True,5,10,211,True,51,intended_goal_success,
+P1,put_the_bowl_on_the_plate,1,put the bowl on the plate,plate,True,True,5,10,220,True,48,intended_goal_success,
+P1,put_the_bowl_on_the_plate,2,put the bowl on the plate,plate,True,True,5,10,225,True,54,intended_goal_success,
+P1,put_the_bowl_on_the_plate,3,put the bowl on the plate,plate,True,True,5,10,202,True,45,intended_goal_success,
+P1,put_the_bowl_on_the_plate,4,put the bowl on the plate,plate,True,True,5,10,217,True,50,intended_goal_success,
+P1,put_the_bowl_on_the_plate,0,put the bowl on top of the cabinet,cabinet,True,True,5,10,205,True,42,intended_goal_success,
+P1,put_the_bowl_on_the_plate,1,put the bowl on top of the cabinet,cabinet,False,False,0,0,0,False,,task_failure,no_grasp
+P1,put_the_bowl_on_the_plate,2,put the bowl on top of the cabinet,cabinet,True,True,5,10,213,False,,intended_goal_success,no_grasp
+P1,put_the_bowl_on_the_plate,3,put the bowl on top of the cabinet,cabinet,True,True,5,10,201,True,39,intended_goal_success,
+P1,put_the_bowl_on_the_plate,4,put the bowl on top of the cabinet,cabinet,True,True,5,10,208,True,47,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,0,put the wine bottle on the rack,rack,True,True,5,10,130,True,94,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,1,put the wine bottle on the rack,rack,True,True,5,10,146,True,98,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,2,put the wine bottle on the rack,rack,False,False,0,0,0,True,109,task_failure,terminal_placement_failed
+P2,put_the_wine_bottle_on_the_rack,3,put the wine bottle on the rack,rack,True,True,5,10,101,True,87,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,4,put the wine bottle on the rack,rack,True,True,5,10,149,True,85,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,0,put the wine bottle on top of the cabinet,cabinet,True,True,5,10,188,True,40,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,1,put the wine bottle on top of the cabinet,cabinet,True,True,5,10,157,True,46,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,2,put the wine bottle on top of the cabinet,cabinet,True,True,5,10,105,True,46,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,3,put the wine bottle on top of the cabinet,cabinet,True,True,5,10,138,True,48,intended_goal_success,
+P2,put_the_wine_bottle_on_the_rack,4,put the wine bottle on top of the cabinet,cabinet,True,True,5,10,175,True,47,intended_goal_success,
+P3,put_the_bowl_on_the_stove,0,put the bowl on the stove,stove,True,True,5,10,204,True,53,intended_goal_success,
+P3,put_the_bowl_on_the_stove,1,put the bowl on the stove,stove,False,False,0,0,0,False,,task_failure,no_grasp
+P3,put_the_bowl_on_the_stove,2,put the bowl on the stove,stove,False,False,0,0,0,True,58,task_failure,terminal_placement_failed
+P3,put_the_bowl_on_the_stove,3,put the bowl on the stove,stove,True,True,5,10,204,True,49,intended_goal_success,
+P3,put_the_bowl_on_the_stove,4,put the bowl on the stove,stove,True,True,5,10,215,True,59,intended_goal_success,
+P3,put_the_bowl_on_the_stove,0,put the bowl on the plate,plate,True,True,4,9,3,True,55,intended_goal_success,
+P3,put_the_bowl_on_the_stove,1,put the bowl on the plate,plate,True,True,5,10,203,True,60,intended_goal_success,
+P3,put_the_bowl_on_the_stove,2,put the bowl on the plate,plate,False,False,0,0,0,False,,task_failure,no_grasp
+P3,put_the_bowl_on_the_stove,3,put the bowl on the plate,plate,False,False,0,0,0,True,51,task_failure,terminal_placement_failed
+P3,put_the_bowl_on_the_stove,4,put the bowl on the plate,plate,False,False,0,0,0,False,,task_failure,no_grasp
+P4,put_the_bowl_on_top_of_the_cabinet,0,put the bowl on top of the cabinet,cabinet,False,False,0,0,0,False,,task_failure,no_grasp
+P4,put_the_bowl_on_top_of_the_cabinet,1,put the bowl on top of the cabinet,cabinet,True,True,5,10,199,True,48,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,2,put the bowl on top of the cabinet,cabinet,True,True,5,10,208,True,48,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,3,put the bowl on top of the cabinet,cabinet,True,True,5,10,203,True,43,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,4,put the bowl on top of the cabinet,cabinet,True,True,5,10,215,True,44,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,0,put the bowl on the plate,plate,True,True,5,10,210,True,56,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,1,put the bowl on the plate,plate,True,True,5,10,217,True,55,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,2,put the bowl on the plate,plate,True,True,5,10,216,True,56,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,3,put the bowl on the plate,plate,True,True,5,10,203,True,55,intended_goal_success,
+P4,put_the_bowl_on_top_of_the_cabinet,4,put the bowl on the plate,plate,True,True,5,10,203,True,60,intended_goal_success,
