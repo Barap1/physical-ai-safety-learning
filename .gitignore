@@ -1,0 +1,56 @@
+# Credentials and local agent/tool state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*token*.txt
+*credentials*.json
+.aws/
+.agents/
+.codex/
+# Environments, caches, weights, assets and datasets
+.venv/
+venv/
+env/
+envs/
+miniforge*/
+anaconda*/
+.cache/
+.huggingface/
+huggingface/
+models/
+weights/
+assets/
+datasets/
+data/
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+*.hdf5
+*.h5
+# Python, build and temporary outputs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+*.tmp
+*.log
+*.pid
+*.lock
+.DS_Store
+# Large generated telemetry / media. Small summaries remain versioned.
+*.jsonl
+*.mp4
+*.avi
+*.mov
+videos/
+results/**/raw/
+results/**/failures/
+results/**/logs/
+results/**/attempts/
+results/first_libero_frame.png
