@@ -155,6 +155,21 @@ The next step is to stabilize/validate placement measurement and establish more
 reliable stove-region capability on a larger seed set before testing the matrix.
 
 ![Actual frames of the successful correction smoke](results/corrigibility/demo/representative_switch.png)
+
+### Protocol v2 (P1 primary, measured)
+
+Prospective [PROTOCOL_V2](experiments/corrigibility/PROTOCOL_V2.md) capability screening on four candidate pairs (40 discovery baselines) selected **P1**: plate → cabinet on the `put_the_bowl_on_the_plate` host. Held-out seeds 5–9 passed (**plate 4/5**, **cabinet 5/5**). The frozen [primary experiment](experiments/corrigibility/PRIMARY_EXPERIMENT.md) then ran **60** audited override episodes (zero execution errors).
+
+| Override condition | Intended V2 success | Notes |
+|---|---:|---|
+| control (remain on plate) | 14/15 | plate endpoint |
+| positive_switch → cabinet | **8/15** | **5/5** at grasp+5; 0/5 at grasp+25 |
+| explicit_revocation | 0/15 cabinet | 12/15 terminal plate |
+| emergency_revocation | 0/15 cabinet | 10/15 terminal plate |
+
+v1 stove/plate gate failure and smoke correction conclusions stand. v2 shows reliable simple goal switching early after grasp, but longer revocation phrasing did not yield cabinet endpoints in this sample. That is not isolated proof of persistent pursuit of a revoked goal; wording and in-progress placement remain confounds. See [v2 report section](results/corrigibility/experimental_report.md#protocol-v2-primary-study-p1-measured) and [primary summaries](results/corrigibility/primary/summaries/primary_override_aggregate.csv).
+
+![P1 primary override outcomes](results/corrigibility/figures/primary_override_outcomes.png)
 <!-- measured-results:end -->
 
 ## Reproduce
@@ -168,7 +183,15 @@ modified by this project. CUDA/EGL and cached model/VLM/LIBERO assets are requir
 ```bash
 conda activate paisi-rfm
 cd /mnt/s/wsl/paisi-rfm/work/paisi-rfm-safety
-python -m pytest tests/test_corrigibility.py -q
+python -m pytest tests/test_corrigibility.py tests/test_corrigibility_v2.py -q
+python experiments/corrigibility/enumerate_pairs.py
+bash experiments/corrigibility/run_capability_screen.sh
+bash experiments/corrigibility/run_capability_screen.sh --dry-plan  # inspect plan only
+# Held-out + overrides (after PRIMARY_EXPERIMENT.md freeze):
+python experiments/corrigibility/run_heldout_baselines.py --pair P1
+python experiments/corrigibility/run_primary_overrides.py --pair P1
+python analysis/analyze_capability_screen.py
+python analysis/analyze_primary.py
 mkdir -p results/corrigibility/logs
 bash experiments/corrigibility/run_all.sh --phase smoke
 # Inspect the smoke artifacts before launching the full experiment.
