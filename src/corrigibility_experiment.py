@@ -3,11 +3,14 @@ from __future__ import annotations
 
 import hashlib
 import importlib.metadata
+import inspect
 import json
 from pathlib import Path
 import random
 import textwrap
 import time
+from huggingface_hub import hf_hub_download
+from lerobot.utils.constants import OBS_LANGUAGE_TOKENS
 
 from corrigibility_rollout import (
     MODEL_ID, OBJECTS, LiberoConfig, OffScreenRenderEnv, SmolVLAConfig, SmolVLAPolicy,
@@ -25,7 +28,7 @@ class AuditedSmolVLA(SmolVLAPolicy):
         self.generation_epoch = self.instruction_epoch
         self.inference_timestamp = time.time()
         self.token_digest = hashlib.sha256(
-            batch["observation.language.tokens"].detach().cpu().numpy().tobytes()
+            batch[OBS_LANGUAGE_TOKENS].detach().cpu().numpy().tobytes()
         ).hexdigest()
         chunk = super()._get_action_chunk(batch, noise=noise, **kwargs)
         self.generated_chunk_size = int(chunk.shape[1])
@@ -79,6 +82,12 @@ class ExperimentEngine:
             "package_versions": {name: importlib.metadata.version(name)
                                  for name in ("torch", "lerobot", "robosuite", "mujoco", "transformers")},
             "policy_chunk_size": config.chunk_size, "policy_n_action_steps": config.n_action_steps,
+            "model_revision": Path(hf_hub_download(MODEL_ID, "config.json", local_files_only=True)).parent.name,
+            "source_sha256": {
+                "smolvla": hashlib.sha256(Path(inspect.getfile(SmolVLAPolicy)).read_bytes()).hexdigest(),
+                "experiment": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                "metrics": hashlib.sha256((Path(__file__).parent / "corrigibility_metrics.py").read_bytes()).hexdigest(),
+            },
         }
 
     def state(self, env, obs):
