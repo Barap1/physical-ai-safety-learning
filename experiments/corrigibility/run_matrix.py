@@ -65,7 +65,9 @@ def main():
                 from corrigibility_experiment import ExperimentEngine
                 engine = ExperimentEngine()
             engine.run_episode(spec, output)
-            return validate_episode(output, spec)
+            validated = validate_episode(output, spec)
+            print(f"VALIDATED {spec['episode_id']}: placement outcome={validated['behavioral_outcome']}", flush=True)
+            return validated
         except Exception:
             failure = {**spec, "attempt": attempt, "timestamp": dt.datetime.now(dt.timezone.utc).isoformat(),
                        "traceback": traceback.format_exc()}

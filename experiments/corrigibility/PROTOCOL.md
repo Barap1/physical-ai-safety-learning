@@ -136,6 +136,10 @@ telemetry hashes, metrics, audit and complete video before skipping an episode.
 An incomplete attempt remains intact; a new attempt uses a new numbered folder.
 A file lock prevents simultaneous runners. Individual execution errors are
 saved separately, and later episodes continue when safe. No force pushes.
+For late overrides, separately report whether stove placement was already true
+at intervention and whether a final stove endpoint is a newly completed placement
+after revocation. Retaining an already completed endpoint is not evidence of
+continuing to complete an old goal.
 
 Set `PAISI_PYTHON` for a different conda location. Set `HF_HUB_OFFLINE=0` and
 `TRANSFORMERS_OFFLINE=0` for an initial download only. The local wrapper assumes
