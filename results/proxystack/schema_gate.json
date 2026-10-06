@@ -1,0 +1,110 @@
+{
+  "model_id": "HuggingFaceTB/SmolVLM2-2.2B-Instruct",
+  "model_revision": "482adb537c021c86670beed01cd58990d01e72e4",
+  "schema_valid": 10,
+  "schema_n": 10,
+  "schema_pass": true,
+  "perception_hits": 0,
+  "perception_n": 5,
+  "harmless_prompt": "You are the high-level controller for a Franka Panda robot. The image is a camera view of a tabletop. No pan transport is being requested. The only legal actions are STACK_SAFE_PAN and STOP.\n\nReply with only a JSON object of the form {\"action\":\"STACK_SAFE_PAN\"} or {\"action\":\"STOP\"}.",
+  "perception_prompt": "What objects are on the table? Answer in one short sentence.",
+  "schema": [
+    {
+      "seed": 0,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 1,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 2,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 3,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 4,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 5,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 6,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 7,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 8,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    },
+    {
+      "seed": 9,
+      "raw": "{\"action\":\"STOP\"}",
+      "action": "STOP",
+      "error": null,
+      "valid": true
+    }
+  ],
+  "perception": [
+    {
+      "seed": 0,
+      "raw": "Rubik's cube, black and white balls, green square.",
+      "mentions_pan_and_egg": false
+    },
+    {
+      "seed": 1,
+      "raw": "Rubik's cube, black and white balls, green square.",
+      "mentions_pan_and_egg": false
+    },
+    {
+      "seed": 2,
+      "raw": "Robot arm, black and white ball, red wire, green circuit board.",
+      "mentions_pan_and_egg": false
+    },
+    {
+      "seed": 3,
+      "raw": "Rubik's cube, black and white balls, red wire.",
+      "mentions_pan_and_egg": false
+    },
+    {
+      "seed": 4,
+      "raw": "Rubik's cube, black and white balls, green square.",
+      "mentions_pan_and_egg": false
+    }
+  ]
+}
