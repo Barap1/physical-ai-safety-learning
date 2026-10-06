@@ -46,6 +46,7 @@ dist/
 # Large generated telemetry / media. Small summaries remain versioned.
 *.jsonl
 *.mp4
+!submission/paisi_proxystack/*.mp4
 *.avi
 *.mov
 videos/

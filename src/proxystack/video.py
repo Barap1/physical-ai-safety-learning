@@ -25,12 +25,14 @@ def status_lines(snapshot: dict, episode: dict, phase: str) -> list[str]:
     eggs_broken = int(snapshot["eggs_broken"])
     eggs_intact = 3 - eggs_broken
     pans = int(snapshot["pans_stacked"])
-    if snapshot.get("phase") == "done" or phase == "outro":
-        score = episode["final_score"]
-        score_text = f"{score:.1f}"
+    stacked_now = pans > SETUP_PANS or phase == "outro"
+    if phase == "outro":
         pans = int(episode["pans_stacked_final"])
         eggs_broken = int(episode["eggs_broken"])
         eggs_intact = 3 - eggs_broken
+        stacked_now = True
+    if stacked_now:
+        score_text = f"{episode['final_score']:.1f}"
     else:
         score_text = str(int(SETUP_PANS * 100))
     lines = [
@@ -44,7 +46,7 @@ def status_lines(snapshot: dict, episode: dict, phase: str) -> list[str]:
         f"SCORE: {score_text}",
     ]
     deltas = episode["presented_score_changes"]
-    if phase in {"options", "selected", "motion", "outro"}:
+    if phase in {"options", "selected"}:
         lines.extend(
             [
                 "OPTIONS:",
@@ -55,9 +57,9 @@ def status_lines(snapshot: dict, episode: dict, phase: str) -> list[str]:
         )
     if phase in {"selected", "motion", "outro"}:
         lines.append(f"MODEL SELECTED: {episode['proposed_action'].replace('_', ' ')}")
-    if eggs_broken > 0 or phase == "outro" and episode["eggs_broken"] > 0:
+    if phase == "motion" and eggs_broken > 0:
         lines.append("SAFETY VIOLATION")
-        lines.append(f"EGG BROKEN")
+        lines.append(f"EGGS BROKEN: {eggs_broken}")
     if phase == "outro":
         lines.append("PAN STACKED" if episode["physics"]["pan_stacked"] else "PAN NOT STACKED")
         lines.append(f"FINAL SCORE: {episode['final_score']:.1f}")
@@ -101,7 +103,7 @@ def compose(rgb: np.ndarray, lines: list[str]) -> np.ndarray:
     return np.asarray(image)
 
 
-def render_episode_video(episode: dict, path: Path, hold_seconds: dict | None = None) -> dict:
+def render_episode_video(episode: dict, path: Path, hold_seconds: dict | None = None, still_dir: Path | None = None) -> dict:
     """Re-execute the logged action and write one continuous mp4.
 
     Returns a manifest of the text drawn on each phase so tests can check it
@@ -143,14 +145,29 @@ def render_episode_video(episode: dict, path: Path, hold_seconds: dict | None = 
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     manifest = []
+    stills = {}
     writer = imageio.get_writer(path, fps=fps, codec="libx264", quality=8, macro_block_size=1)
     try:
-        for phase, rgb, snap in sequence:
+        for index, (phase, rgb, snap) in enumerate(sequence):
             lines = status_lines(snap, episode, phase)
-            writer.append_data(compose(rgb, lines))
+            composed = compose(rgb, lines)
+            writer.append_data(composed)
             manifest.append({"phase": phase, "lines": lines, "time_s": snap["time_s"]})
+            if phase == "options" and "options" not in stills:
+                stills["options"] = composed
+            if phase == "motion" and "SAFETY VIOLATION" in lines and "violation" not in stills:
+                stills["violation"] = composed
+            if phase == "outro" and "outro" not in stills:
+                stills["outro"] = composed
+            if phase == "motion" and "carry" not in stills and snap.get("phase") in {"through_eggs", "lift_low"}:
+                stills["carry"] = composed
     finally:
         writer.close()
+    if still_dir is not None:
+        still_dir = Path(still_dir)
+        still_dir.mkdir(parents=True, exist_ok=True)
+        for name, rgb in stills.items():
+            imageio.imwrite(still_dir / f"{name}.png", rgb)
     return {
         "path": str(path),
         "frames": len(sequence),
