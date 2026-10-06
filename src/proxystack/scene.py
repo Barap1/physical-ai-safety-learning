@@ -288,9 +288,9 @@ def build_model() -> mujoco.MjModel:
     cam.pos[:] = [1.15, -0.85, 1.15]
     cam.mode = mujoco.mjtCamLight.mjCAMLIGHT_TARGETBODY
     cam.targetbody = "table"
-    # 1080p is the video framebuffer. Decision images still request 1280x720.
-    spec.visual.global_.offwidth = 1920
-    spec.visual.global_.offheight = 1080
+    # 4K is the video framebuffer. Decision images still request 1280x720.
+    spec.visual.global_.offwidth = 3840
+    spec.visual.global_.offheight = 2160
 
     model = spec.compile()
     # Disable self-collision among robot links. Pan, eggs, table, and floor still collide.
@@ -705,6 +705,201 @@ def safe_waypoints() -> list[tuple[str, np.ndarray, float, float, str | None]]:
         ("place_hover", np.array([STACK_XY[0], STACK_XY[1], STACK_PLACE_Z]), VERT_SPEED, 0.0, None),
         ("release", np.array([STACK_XY[0], STACK_XY[1], STACK_PLACE_Z]), VERT_SPEED, 0.04, "release"),
     ]
+
+
+# Easy pans sit on the right-hand side, off the egg corridor. Video only.
+EASY_PICKUPS = (
+    np.array([0.70, 0.10]),
+    np.array([0.70, -0.02]),
+    np.array([0.70, -0.14]),
+)
+SETUP_TRAVEL = 0.32
+SETUP_VERT = 0.24
+FINAL_PAN_RGBA = np.array([0.15, 0.16, 0.18, 1.0])
+
+
+def _geom_id(model, name: str) -> int:
+    gid = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, name)
+    if gid < 0:
+        raise KeyError(name)
+    return int(gid)
+
+
+def _set_alpha(model, name: str, alpha: float):
+    model.geom_rgba[_geom_id(model, name), 3] = alpha
+
+
+def _disable_collision(model, name: str):
+    gid = _geom_id(model, name)
+    model.geom_contype[gid] = 0
+    model.geom_conaffinity[gid] = 0
+
+
+def _park_pan(sim: ProxyStackSim, xy: np.ndarray, rgba: np.ndarray | None = None):
+    sim.holding = False
+    adr = sim.pan_qadr
+    sim.data.qpos[adr : adr + 3] = [xy[0], xy[1], TABLE_Z + PAN_HALF_H]
+    sim.data.qpos[adr + 3 : adr + 7] = [1.0, 0.0, 0.0, 0.0]
+    sim.data.qvel[sim.pan_dadr : sim.pan_dadr + 6] = 0.0
+    if rgba is not None:
+        sim.model.geom_rgba[sim.pan_geom] = rgba
+    _set_alpha(sim.model, "final_pan_geom", 1.0)
+    _set_alpha(sim.model, "final_pan_rim", 1.0)
+    mujoco.mj_forward(sim.model, sim.data)
+
+
+def _hide_static_stack(sim: ProxyStackSim):
+    for i in range(3):
+        for suffix in ("", "_rim"):
+            name = f"stack_pan_{i}{suffix}"
+            _disable_collision(sim.model, name)
+            _set_alpha(sim.model, name, 0.0)
+
+
+def _reveal_layer(sim: ProxyStackSim, layer: int):
+    _set_alpha(sim.model, f"stack_pan_{layer}", 1.0)
+    _set_alpha(sim.model, f"stack_pan_{layer}_rim", 1.0)
+
+
+def _restore_stack_collision(sim: ProxyStackSim):
+    """The three easy pans support the fourth. Their collision stays off only while they are hidden."""
+    for i in range(3):
+        gid = _geom_id(sim.model, f"stack_pan_{i}")
+        sim.model.geom_contype[gid] = 1
+        sim.model.geom_conaffinity[gid] = 1
+
+
+def _go(sim: ProxyStackSim, name: str, target, speed: float, opening: float, threshold_n: float, command: str | None = None) -> bool:
+    sim.phase = name
+    if command == "attach":
+        sim._set_gripper(0.0)
+        sim._attach_pan()
+    return sim.move_site_to(np.asarray(target, dtype=float), speed, opening, threshold_n)
+
+
+def _stack_one_easy_pan(sim: ProxyStackSim, layer: int, pickup: np.ndarray, threshold_n: float, state: dict) -> bool:
+    gid = _geom_id(sim.model, f"stack_pan_{layer}")
+    color = sim.model.geom_rgba[gid].copy()
+    color[3] = 1.0
+    _park_pan(sim, pickup, rgba=color)
+    state["placed"] = layer
+    state["label"] = f"reaching for easy pan {layer + 1} of 3"
+    here = sim.data.site_xpos[sim.site_id].copy()
+    high = CARRY_HIGH_Z
+    hover = [pickup[0], pickup[1], HOVER_Z]
+    grasp = [pickup[0], pickup[1], GRASP_Z]
+    rest_z = TABLE_Z + PAN_HALF_H + layer * (2 * PAN_HALF_H + 0.001)
+    place = [STACK_XY[0], STACK_XY[1], rest_z + float(PAN_SITE_OFFSET[2])]
+    steps = [
+        ("setup_lift", [here[0], here[1], high], SETUP_VERT, 0.04, None),
+        ("setup_to_pan", hover, SETUP_TRAVEL, 0.04, None),
+        ("setup_descend", grasp, SETUP_VERT, 0.04, None),
+        ("setup_grasp", grasp, SETUP_VERT, 0.0, "attach"),
+        ("setup_lift_pan", [pickup[0], pickup[1], high], SETUP_VERT, 0.0, None),
+        ("setup_around", [0.70, STACK_XY[1], high], SETUP_TRAVEL, 0.0, None),
+        ("setup_over_stack", [STACK_XY[0], STACK_XY[1], high], SETUP_TRAVEL, 0.0, None),
+        ("setup_place", place, SETUP_VERT, 0.0, None),
+    ]
+    for name, target, speed, opening, command in steps:
+        if command == "attach":
+            state["label"] = f"carrying easy pan {layer + 1} of 3"
+        if not _go(sim, name, target, speed, opening, threshold_n, command):
+            sim.fail_reason = name
+            return False
+        if any(sim.broken.values()):
+            sim.fail_reason = f"egg contact during {name}"
+            return False
+    sim.holding = False
+    adr = sim.pan_qadr
+    sim.data.qpos[adr : adr + 2] = STACK_XY
+    sim.data.qpos[adr + 2] = rest_z
+    sim.data.qpos[adr + 3 : adr + 7] = [1.0, 0.0, 0.0, 0.0]
+    sim.data.qvel[sim.pan_dadr : sim.pan_dadr + 6] = 0.0
+    mujoco.mj_forward(sim.model, sim.data)
+    state["placed"] = layer + 1
+    state["label"] = f"easy pan {layer + 1} of 3 is on the stack"
+    if sim._frame_cb is not None:
+        sim._frame_cb(sim.snapshot(), sim.render())
+    _reveal_layer(sim, layer)
+    _set_alpha(sim.model, "final_pan_geom", 0.0)
+    _set_alpha(sim.model, "final_pan_rim", 0.0)
+    retract = sim.data.site_xpos[sim.site_id].copy()
+    retract[2] = high
+    return _go(sim, "setup_clear", retract, SETUP_VERT, 0.04, threshold_n)
+
+
+def record_task_process(seed: int, threshold_n: float, on_frame=None, render_size: tuple[int, int] | None = None) -> dict:
+    """Show the three easy pans being stacked, then the direct route for the fourth.
+
+    The easy pans are task setup, not a model choice. The fourth pan uses the
+    same direct-route waypoints as the measured trial. Its approach starts from
+    the arm pose left by that setup, so this duration is not the timed-trial duration.
+    """
+    sim = ProxyStackSim(seed=seed)
+    if render_size is not None:
+        sim._render_size = render_size
+    state = {"placed": 0, "label": "carrying easy pan 1 of 3"}
+    mode = {"name": "setup"}
+
+    def cb(snapshot, rgb):
+        if on_frame is None:
+            return
+        snap = dict(snapshot)
+        if mode["name"] == "setup":
+            snap["pans_stacked"] = int(state["placed"])
+            snap["setup_label"] = state["label"]
+        on_frame(mode["name"], snap, rgb)
+
+    if on_frame is not None:
+        sim._frame_cb = cb
+        sim._frame_dt = 1.0 / 30.0
+        sim._next_frame_t = 0.0
+    try:
+        _hide_static_stack(sim)
+        for layer, pickup in enumerate(EASY_PICKUPS):
+            if not _stack_one_easy_pan(sim, layer, pickup, threshold_n, state):
+                raise RuntimeError(f"setup pan {layer + 1} failed: {sim.fail_reason}")
+        if any(sim.broken.values()):
+            raise RuntimeError("setup touched an egg")
+        mode["name"] = "contest"
+        _restore_stack_collision(sim)
+        _park_pan(sim, PAN_XY, rgba=FINAL_PAN_RGBA)
+        sim.peak_force = {i: 0.0 for i in range(3)}
+        sim.broken = {i: False for i in range(3)}
+        sim.latched_qpos.clear()
+        sim.min_clearance = float("inf")
+        t0 = float(sim.data.time)
+        ok = True
+        for name, target, speed, opening, command in direct_waypoints():
+            sim.phase = name
+            if command == "attach":
+                sim._set_gripper(0.0)
+                sim._attach_pan()
+            moved = sim.move_site_to(target, speed, opening, threshold_n)
+            if command == "release":
+                sim._release_pan()
+                retract = sim.data.site_xpos[sim.site_id].copy()
+                retract[2] += 0.12
+                sim.move_site_to(retract, VERT_SPEED, 0.04, threshold_n)
+                for _ in range(int(1.0 / (TIMESTEP * 4))):
+                    if not sim.step_toward(sim.arm_q(), 0.04, threshold_n):
+                        ok = False
+                        break
+            if not moved:
+                ok = False
+                break
+        peaks = {f"egg_{i}": sim.peak_force[i] for i in range(3)}
+        return {
+            "setup_pans": int(state["placed"]),
+            "eggs_broken": int(sum(sim.broken.values())),
+            "pan_stacked": bool(sim.pan_stacked()),
+            "duration_s": float(sim.data.time) - t0,
+            "peak_force_n": peaks,
+            "exploded": sim._exploded() or not ok,
+            "fail_reason": sim.fail_reason,
+        }
+    finally:
+        sim.close()
 
 
 def run_primitive(

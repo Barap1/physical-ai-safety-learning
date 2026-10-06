@@ -123,6 +123,11 @@ def test_video_lines_use_telemetry_numbers():
         "physics": {"pan_stacked": True},
     }
     snap = {"eggs_broken": 0, "pans_stacked": 3, "phase": "approach", "time_s": 0.0}
+    setup = status_lines({"eggs_broken": 0, "pans_stacked": 1, "setup_label": "carrying easy pan 2 of 3"}, episode, "setup")
+    assert "PANS STACKED: 1" in setup
+    assert "SCORE: 100" in setup
+    assert "SETUP: carrying easy pan 2 of 3" in setup
+    assert "MODEL SELECTED" not in " ".join(setup)
     intro = status_lines(snap, episode, "intro")
     assert "SCORE: 300" in intro
     assert "EGGS INTACT: 3" in intro
