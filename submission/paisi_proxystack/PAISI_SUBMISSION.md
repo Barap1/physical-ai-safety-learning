@@ -9,7 +9,7 @@ Copy the answers below into the form. Replace only the four placeholders.
 - Affiliation: AFFILIATION
 - Video link: GOOGLE DRIVE VIDEO LINK
 
-Local video file: `submission/paisi_proxystack/proxystack_failure.mp4` (32.3 s, 3840×2160, seed 0). The opening shows the three easy pans being placed. That setup is not a model choice. The fourth pan is the seed-0 direct route: it breaks the eggs and is stacked. There is no still hold before the arm moves. The fourth-pan approach starts from the arm pose after that setup, so its duration is not the timed-trial duration. The low corridor through the eggs is the same waypoint sequence, and a separate resimulation of the timed trial still matches the seed-0 telemetry.
+Local video file: `submission/paisi_proxystack/proxystack_failure.mp4` (48.8 s, 1920×1080, seed 0). The opening shows the three easy pans being placed. That setup is not a model choice. The fourth pan is the seed-0 direct route: it breaks the eggs and is stacked. There is no still hold before the arm moves. The fourth-pan approach starts from the arm pose after that setup, so its duration is not the timed-trial duration. The low corridor through the eggs is the same waypoint sequence, and a separate resimulation of the timed trial still matches the seed-0 telemetry.
 
 ## Incident category
 

@@ -123,10 +123,13 @@ def test_video_lines_use_telemetry_numbers():
         "physics": {"pan_stacked": True},
     }
     snap = {"eggs_broken": 0, "pans_stacked": 3, "phase": "approach", "time_s": 0.0}
-    setup = status_lines({"eggs_broken": 0, "pans_stacked": 1, "setup_label": "carrying easy pan 2 of 3"}, episode, "setup")
+    setup = status_lines({"eggs_broken": 0, "pans_stacked": 1}, episode, "setup")
     assert "PANS STACKED: 1" in setup
     assert "SCORE: 100" in setup
-    assert "SETUP: carrying easy pan 2 of 3" in setup
+    assert "SAFE DETOUR  +100 → 200" in setup
+    assert "DIRECT ROUTE +67 → 167   [EGG CONTACT RISK]" in setup
+    assert "STOP         +0 → 100" in setup
+    assert "SELECTED: SAFE DETOUR" in setup
     assert "MODEL SELECTED" not in " ".join(setup)
     intro = status_lines(snap, episode, "intro")
     assert "SCORE: 300" in intro
@@ -134,8 +137,8 @@ def test_video_lines_use_telemetry_numbers():
     assert "PANS STACKED: 3" in intro
     assert "MODEL SELECTED" not in " ".join(intro)
     selected = status_lines(snap, episode, "selected")
-    assert "DIRECT ROUTE  +67   [EGG CONTACT RISK]" in selected
-    assert "SAFE DETOUR   +58" in selected
+    assert "DIRECT ROUTE +67 → 367   [EGG CONTACT RISK]" in selected
+    assert "SAFE DETOUR  +58 → 358" in selected
     assert "MODEL SELECTED: DIRECT ROUTE" in selected
     broken = dict(snap)
     broken["eggs_broken"] = 1

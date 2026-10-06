@@ -288,9 +288,9 @@ def build_model() -> mujoco.MjModel:
     cam.pos[:] = [1.15, -0.85, 1.15]
     cam.mode = mujoco.mjtCamLight.mjCAMLIGHT_TARGETBODY
     cam.targetbody = "table"
-    # 4K is the video framebuffer. Decision images still request 1280x720.
-    spec.visual.global_.offwidth = 3840
-    spec.visual.global_.offheight = 2160
+    # 1080p is the video framebuffer. Decision images still request 1280x720.
+    spec.visual.global_.offwidth = 1920
+    spec.visual.global_.offheight = 1080
 
     model = spec.compile()
     # Disable self-collision among robot links. Pan, eggs, table, and floor still collide.
@@ -636,6 +636,38 @@ class ProxyStackSim:
                 return False
         return True
 
+    def move_site_smooth(self, target: np.ndarray, speed: float, opening: float, threshold_n: float) -> bool:
+        """Same Cartesian path as ``move_site_to``, seeded from the current joints.
+
+        Seeding from the destination pose can flip the arm between waypoints.
+        Large joint changes are walked in small steps so the video shows the swing.
+        """
+        target = np.asarray(target, dtype=float)
+        q = self.arm_q().copy()
+        _, err = self.ik(target, q_seed=q)
+        self.max_ik_error = max(self.max_ik_error, err)
+        if err > 0.02:
+            return False
+        start = self.data.site_xpos[self.site_id].copy()
+        dist = float(np.linalg.norm(target - start))
+        dt = TIMESTEP * 4
+        steps = max(int(np.ceil(dist / (max(speed, 1e-3) * dt))), 1)
+        max_joint_step = 0.12
+        for i in range(1, steps + 1):
+            alpha = i / steps
+            mid = (1 - alpha) * start + alpha * target
+            q_next, err = self.ik(mid, q_seed=q)
+            self.max_ik_error = max(self.max_ik_error, err)
+            if err > 0.02:
+                return False
+            delta = q_next - q
+            n_sub = max(int(np.ceil(float(np.max(np.abs(delta))) / max_joint_step)), 1)
+            for k in range(1, n_sub + 1):
+                if not self.step_toward(q + delta * (k / n_sub), opening, threshold_n):
+                    return False
+            q = self.arm_q().copy()
+        return True
+
     def pan_stacked(self) -> bool:
         pos = self.data.qpos[self.pan_qadr : self.pan_qadr + 3]
         vel = self.data.qvel[self.pan_dadr : self.pan_dadr + 3]
@@ -713,8 +745,9 @@ EASY_PICKUPS = (
     np.array([0.70, -0.02]),
     np.array([0.70, -0.14]),
 )
-SETUP_TRAVEL = 0.32
-SETUP_VERT = 0.24
+# Match the measured route speeds so the four placements move at the same pace.
+SETUP_TRAVEL = TRAVEL_SPEED
+SETUP_VERT = VERT_SPEED
 FINAL_PAN_RGBA = np.array([0.15, 0.16, 0.18, 1.0])
 
 
@@ -774,7 +807,7 @@ def _go(sim: ProxyStackSim, name: str, target, speed: float, opening: float, thr
     if command == "attach":
         sim._set_gripper(0.0)
         sim._attach_pan()
-    return sim.move_site_to(np.asarray(target, dtype=float), speed, opening, threshold_n)
+    return sim.move_site_smooth(np.asarray(target, dtype=float), speed, opening, threshold_n)
 
 
 def _stack_one_easy_pan(sim: ProxyStackSim, layer: int, pickup: np.ndarray, threshold_n: float, state: dict) -> bool:
@@ -875,12 +908,12 @@ def record_task_process(seed: int, threshold_n: float, on_frame=None, render_siz
             if command == "attach":
                 sim._set_gripper(0.0)
                 sim._attach_pan()
-            moved = sim.move_site_to(target, speed, opening, threshold_n)
+            moved = sim.move_site_smooth(target, speed, opening, threshold_n)
             if command == "release":
                 sim._release_pan()
                 retract = sim.data.site_xpos[sim.site_id].copy()
                 retract[2] += 0.12
-                sim.move_site_to(retract, VERT_SPEED, 0.04, threshold_n)
+                sim.move_site_smooth(retract, VERT_SPEED, 0.04, threshold_n)
                 for _ in range(int(1.0 / (TIMESTEP * 4))):
                     if not sim.step_toward(sim.arm_q(), 0.04, threshold_n):
                         ok = False
