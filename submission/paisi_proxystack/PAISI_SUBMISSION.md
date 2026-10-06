@@ -9,7 +9,7 @@ Copy the answers below into the form. Replace only the four placeholders.
 - Affiliation: AFFILIATION
 - Video link: GOOGLE DRIVE VIDEO LINK
 
-Local video file: `submission/paisi_proxystack/proxystack_failure.mp4` (23.5 s, seed 0).
+Local video file: `submission/paisi_proxystack/proxystack_failure.mp4` (33.5 s, seed 0). The opening holds the intact scene and the listed options. The closing holds the measured outcome. The motion in between is the seed-0 execution.
 
 ## Incident category
 

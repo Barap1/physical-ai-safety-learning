@@ -71,23 +71,28 @@ def compose(rgb: np.ndarray, lines: list[str]) -> np.ndarray:
     image = Image.fromarray(rgb)
     draw = ImageDraw.Draw(image, "RGBA")
     width, height = image.size
-    draw.rectangle((0, 0, width, 168), fill=(0, 0, 0, 170))
-    title = _font(28, bold=True)
-    body = _font(22)
-    small = _font(20)
-    draw.text((16, 8), lines[0], font=title, fill=(255, 255, 255, 255))
-    draw.text((280, 12), lines[1], font=body, fill=(220, 220, 220, 255))
-    draw.text((16, 48), lines[2], font=body, fill=(255, 255, 255, 255))
-    draw.text((16, 78), lines[3], font=body, fill=(255, 220, 120, 255))
-    draw.text((16, 108), lines[4], font=body, fill=(255, 220, 120, 255))
-    draw.text((16, 138), "  ".join(lines[5:8]), font=small, fill=(255, 255, 255, 255))
+    scale = height / 720.0
+
+    def px(value: float) -> int:
+        return int(round(value * scale))
+
+    draw.rectangle((0, 0, width, px(168)), fill=(0, 0, 0, 170))
+    title = _font(px(28), bold=True)
+    body = _font(px(22))
+    small = _font(px(20))
+    draw.text((px(16), px(8)), lines[0], font=title, fill=(255, 255, 255, 255))
+    draw.text((px(280), px(12)), lines[1], font=body, fill=(220, 220, 220, 255))
+    draw.text((px(16), px(48)), lines[2], font=body, fill=(255, 255, 255, 255))
+    draw.text((px(16), px(78)), lines[3], font=body, fill=(255, 220, 120, 255))
+    draw.text((px(16), px(108)), lines[4], font=body, fill=(255, 220, 120, 255))
+    draw.text((px(16), px(138)), "  ".join(lines[5:8]), font=small, fill=(255, 255, 255, 255))
 
     extra = lines[8:]
     if extra:
-        panel_h = 28 * len(extra) + 16
-        top = height - panel_h - 12
-        draw.rectangle((12, top, 620, height - 12), fill=(0, 0, 0, 170))
-        y = top + 8
+        panel_h = px(28) * len(extra) + px(16)
+        top = height - panel_h - px(12)
+        draw.rectangle((px(12), top, px(620), height - px(12)), fill=(0, 0, 0, 170))
+        y = top + px(8)
         for line in extra:
             color = (255, 255, 255, 255)
             if "DIRECT ROUTE" in line and "EGG" in line:
@@ -98,8 +103,8 @@ def compose(rgb: np.ndarray, lines: list[str]) -> np.ndarray:
                 color = (255, 80, 60, 255)
             if line.startswith("MODEL SELECTED"):
                 color = (255, 230, 120, 255)
-            draw.text((24, y), line, font=small, fill=color)
-            y += 28
+            draw.text((px(24), y), line, font=small, fill=color)
+            y += px(28)
     return np.asarray(image)
 
 
@@ -109,7 +114,8 @@ def render_episode_video(episode: dict, path: Path, hold_seconds: dict | None = 
     Returns a manifest of the text drawn on each phase so tests can check it
     against the episode JSON.
     """
-    holds = hold_seconds or {"intro": 3.0, "options": 4.0, "selected": 2.0, "outro": 3.0}
+    # Opening holds are the intact scene. The closing hold is the measured outcome.
+    holds = hold_seconds or {"intro": 6.0, "options": 5.0, "selected": 3.0, "outro": 8.0}
     frames: list[np.ndarray] = []
     snaps: list[dict] = []
 
@@ -122,6 +128,7 @@ def render_episode_video(episode: dict, path: Path, hold_seconds: dict | None = 
         episode["seed"],
         episode["egg_force_threshold_n"],
         on_frame=on_frame,
+        render_size=(1920, 1080),
     ).to_dict()
     if physics["pan_stacked"] != episode["physics"]["pan_stacked"]:
         raise RuntimeError("video resimulation pan_stacked does not match telemetry")
@@ -146,7 +153,15 @@ def render_episode_video(episode: dict, path: Path, hold_seconds: dict | None = 
     path.parent.mkdir(parents=True, exist_ok=True)
     manifest = []
     stills = {}
-    writer = imageio.get_writer(path, fps=fps, codec="libx264", quality=8, macro_block_size=1)
+    # quality 9 is CRF 5. The slow preset keeps that quality in a smaller file.
+    writer = imageio.get_writer(
+        path,
+        fps=fps,
+        codec="libx264",
+        quality=9,
+        macro_block_size=1,
+        output_params=["-preset", "slow"],
+    )
     try:
         for index, (phase, rgb, snap) in enumerate(sequence):
             lines = status_lines(snap, episode, phase)

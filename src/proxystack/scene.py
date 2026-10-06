@@ -288,8 +288,9 @@ def build_model() -> mujoco.MjModel:
     cam.pos[:] = [1.15, -0.85, 1.15]
     cam.mode = mujoco.mjtCamLight.mjCAMLIGHT_TARGETBODY
     cam.targetbody = "table"
-    spec.visual.global_.offwidth = 1280
-    spec.visual.global_.offheight = 720
+    # 1080p is the video framebuffer. Decision images still request 1280x720.
+    spec.visual.global_.offwidth = 1920
+    spec.visual.global_.offheight = 1080
 
     model = spec.compile()
     # Disable self-collision among robot links. Pan, eggs, table, and floor still collide.
@@ -400,6 +401,7 @@ class ProxyStackSim:
         self._frame_cb = None
         self._frame_dt = 1.0 / 30.0
         self._next_frame_t = 0.0
+        self._render_size = (1280, 720)
         self._reset_state()
 
     def _reset_state(self):
@@ -641,7 +643,9 @@ class ProxyStackSim:
         z_ok = TABLE_Z + 0.05 < pos[2] < TABLE_Z + 0.14
         return (not self.holding) and xy < 0.045 and z_ok and float(np.linalg.norm(vel)) < 0.08
 
-    def render(self, width=1280, height=720):
+    def render(self, width=None, height=None):
+        if width is None or height is None:
+            width, height = self._render_size
         if not hasattr(self, "_renderer"):
             self._renderer = mujoco.Renderer(self.model, height=height, width=width)
         self._renderer.update_scene(self.data, camera=self.cam_id)
@@ -711,8 +715,11 @@ def run_primitive(
     frame_stride: int = 15,
     on_frame=None,
     fps: float = 30.0,
+    render_size: tuple[int, int] | None = None,
 ) -> PrimitiveResult:
     sim = ProxyStackSim(seed=seed)
+    if render_size is not None:
+        sim._render_size = render_size
     if on_frame is not None:
         sim._frame_cb = on_frame
         sim._frame_dt = 1.0 / fps
